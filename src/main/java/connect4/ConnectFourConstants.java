@@ -18,6 +18,9 @@ public final class ConnectFourConstants {
     public static final String TOO_FEW_INPUTS = "Too few characters input. Please enter TWO numbers seperated by a comma in format 'C,R' where C = column number and R = row number. For instance, '1,3'";
     public static final String PLACE_TAKEN = "That place has been taken. Please try again";
     public static final String EXIT_MESSAGE = "Thank you for playing connect4. Goodbye!";
+    public static final String WINNER_MESSAGE = "You've won!! Congratulations, and thank you for playing connect4. Goodbye!";
+    public static final String LOSER_MESSAGE = "You lost to the robots... Better luck next time!! Thank you for playing connect4. Goodbye!";
+
 }
 
 // Prevents subclassing: A constants-only class is not meant to be extended. Marking it final enforces that intent.

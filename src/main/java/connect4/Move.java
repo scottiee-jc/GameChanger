@@ -1,9 +1,8 @@
 package connect4;
 
-public class Move {
-
-    private int column;
-    private int row;
+public final class Move { // move should be immutable as the internal state should not be modified as it tracks game state.
+    private final int column;
+    private final int row;
 
     public Move(int column, int row) {
         this.column = column;
@@ -14,15 +13,7 @@ public class Move {
         return column;
     }
 
-    public void setColumn(int column) {
-        this.column = column;
-    }
-
     public int getRow() {
         return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
     }
 }

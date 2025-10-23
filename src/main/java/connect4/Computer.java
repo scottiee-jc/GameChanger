@@ -1,23 +1,28 @@
 package connect4;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class Computer {
+public final class Computer { // Computer should be final for immutability purposes - only one per game.
+    private final Deque<Move> moves = new ArrayDeque<>();
+    private final Deque<Move> playerLastMove = new ArrayDeque<>();
 
-    final Deque<Move> moves;
-
-    public Computer(Deque<Move> moves) {
-        this.moves = moves;
-    }
-
-    public Deque<Move> getMoves() {
-        return moves;
+    public Computer() {
     }
 
     public Move getLastMove(){
-        if (!moves.isEmpty()){
-            return moves.getLast();
-        }
-        return null;
+        return moves.getLast();
+    }
+
+    public Move getPlayerLastMove(){
+        return playerLastMove.getLast();
+    }
+
+    public void recordMove(Move move) {
+        moves.addLast(move);
+    }
+
+    public void recordPlayerMove(Move move) {
+        playerLastMove.addLast(move);
     }
 }

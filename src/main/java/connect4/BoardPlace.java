@@ -1,28 +1,27 @@
 package connect4;
 
 public class BoardPlace {
-    private final int columnPosition;
+    private final int position;
     private String boardPiece;
 
-    public BoardPlace(int columnPosition, String boardPiece){
-        this.columnPosition = columnPosition;
+    public BoardPlace(int position, String boardPiece){
+        this.position = position;
         this.boardPiece = boardPiece;
     }
 
-    public int getColumnPosition(){
-        return columnPosition;
+    public int getPosition(){
+        return position;
     }
 
     public String getBoardPiece(){
         return boardPiece;
     }
 
-    public void placeMove(String playerMove){
-        if (this.columnPosition == 7){
+    public void placeMove(String playerMove, int index){
+        if (index == 7){
             this.boardPiece = "| " + playerMove + " |";
         } else{
             this.boardPiece = "| " + playerMove + " ";
         }
     }
-
 }
