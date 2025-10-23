@@ -39,27 +39,30 @@ public class GameRunner {
                 }
                 boolean isValid = myConnectFour.isValidInput(command);
                 if (isValid){
-                    myConnectFour.editBoard(command, "r");
                     String[] userMove = command.split(",");
-                    computer.recordPlayerMove(new Move(Integer.parseInt(userMove[0]), Integer.parseInt(userMove[1])));
+                    Move move = new Move(Integer.parseInt(userMove[0]), Integer.parseInt(userMove[1]));
+                    myConnectFour.editBoard(move, "r");
+                    computer.recordPlayerMove(move);
                 }
                 myConnectFour.printBoard();
                 if (myConnectFour.hasWon("r")){
                     win = true;
                     System.out.println(WINNER_MESSAGE);
+                    System.exit(0);
                 }
                 isUser = false;
             }
             while (!isUser){
                 myConnectFour.generateComputerMove(computer);
+                myConnectFour.printBoard();
                 if (myConnectFour.hasWon("y")){
                     win = true;
                     System.out.println(LOSER_MESSAGE);
+                    System.exit(0);
                 }
                 isUser = true;
             }
         }
-        System.exit(0);
     }
 
 

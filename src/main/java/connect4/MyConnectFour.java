@@ -5,7 +5,7 @@ import java.util.zip.DataFormatException;
 public interface MyConnectFour {
 
     Board createBoard();
-    void editBoard(String input, String playerMove);
+    void editBoard(Move move, String playerMove);
     void generateComputerMove(Computer computer);
     boolean hasWon(String player);
     void printBoard();
