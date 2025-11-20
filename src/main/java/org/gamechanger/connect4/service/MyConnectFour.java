@@ -1,4 +1,8 @@
-package connect4;
+package org.gamechanger.connect4.service;
+
+import org.gamechanger.boardGameCommons.Move;
+import org.gamechanger.connect4.constants.Directions;
+import org.gamechanger.connect4.model.BoardElement;
 
 import java.util.List;
 import java.util.zip.DataFormatException;

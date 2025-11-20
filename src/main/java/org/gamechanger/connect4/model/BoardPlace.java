@@ -1,4 +1,4 @@
-package connect4;
+package org.gamechanger.connect4.model;
 
 public class BoardPlace {
     private final int position;

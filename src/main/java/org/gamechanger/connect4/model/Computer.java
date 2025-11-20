@@ -1,4 +1,6 @@
-package connect4;
+package org.gamechanger.connect4.model;
+
+import org.gamechanger.boardGameCommons.Move;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

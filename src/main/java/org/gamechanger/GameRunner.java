@@ -1,4 +1,11 @@
-package connect4;
+package org.gamechanger;
+
+import org.gamechanger.boardGameCommons.Move;
+import org.gamechanger.connect4.impl.MyConnectFourImpl;
+import org.gamechanger.connect4.model.ConnectFourBoard;
+import org.gamechanger.connect4.service.ComputerPlayerInterface;
+import org.gamechanger.connect4.impl.ComputerPlayerInterfaceImpl;
+import org.gamechanger.connect4.model.BoardElement;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -6,7 +13,9 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static connect4.ConnectFourConstants.*;
+import static org.gamechanger.boardGameCommons.CommonConstants.BOARD_PIECE;
+import static org.gamechanger.boardGameCommons.CommonConstants.END_PIECE;
+import static org.gamechanger.connect4.constants.ConnectFourConstants.*;
 
 /**
  * GameRunner classes utilises the playGame() method to control logic flow during application runtime.
@@ -32,7 +41,7 @@ public class GameRunner {
      * @throws IOException
      */
     public static void playGame() throws IOException {
-        Board board = createBoard();
+        ConnectFourBoard board = createBoard();
         MyConnectFourImpl myConnectFour = new MyConnectFourImpl(board);
         ComputerPlayerInterface computerPlayerInterface = new ComputerPlayerInterfaceImpl(board, myConnectFour);
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -78,7 +87,7 @@ public class GameRunner {
      * Once j has reached the max end of the column iteration loop, it assigns a double ended line space to close the board horizontally.
      * The board only needs to be created once but needs to be accessed by both interfaces used in this API, so created when playGame() is called then passed into their constructors
      */
-    private static Board createBoard() {
+    private static ConnectFourBoard createBoard() {
         List<BoardElement> elements = new ArrayList<>();
         for (int i = 1; i <= ROW_SIZE ; i++) {
             for (int j = 1; j <= COLUMN_SIZE; j++) {
@@ -91,7 +100,7 @@ public class GameRunner {
                 elements.add(boardElement);
             }
         }
-        return new Board(elements);
+        return new ConnectFourBoard(elements);
     }
 
     /**

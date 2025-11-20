@@ -1,4 +1,4 @@
-package connect4;
+package org.gamechanger.boardGameCommons;
 
 /**
  * Move is a data transfer object (DTO) used to track game state.

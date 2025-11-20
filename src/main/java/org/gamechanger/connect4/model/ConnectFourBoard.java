@@ -1,32 +1,35 @@
-package connect4;
+package org.gamechanger.connect4.model;
+
+import org.gamechanger.boardGameCommons.GameBoard;
 
 import java.util.List;
 
-import static connect4.ConnectFourConstants.*;
+import static org.gamechanger.boardGameCommons.CommonConstants.*;
+import static org.gamechanger.connect4.constants.ConnectFourConstants.COLUMN_SIZE;
+import static org.gamechanger.connect4.constants.ConnectFourConstants.ROW_SIZE;
 
-public class Board {
-    private final List<BoardElement> boardElements;
-    public Board(List<BoardElement> boardElements) {
-        this.boardElements = boardElements;
-    }
+public class ConnectFourBoard extends GameBoard {
 
-    public List<BoardElement> getBoardElements() {
-        return boardElements;
+    public ConnectFourBoard(List<BoardElement> boardElements) {
+        super(boardElements);
     }
 
     public List<BoardElement> getByRow(int row){
-        return boardElements.stream().filter(boardElement -> boardElement.getRowPosition() == row).toList();
+        return getBoardElements().stream().filter(boardElement -> boardElement.getRowPosition() == row).toList();
     }
 
+    @Override
     public List<BoardElement> getByColumn(int column){
-        return boardElements.stream().filter(boardElement -> boardElement.getRowPosition() == column).toList();
-    }
-    public List<BoardElement> getPlayerSpaces(String token){
-        return boardElements.stream().filter(boardElement -> boardElement.getBoardPlace().contains(token)).toList();
+        return getBoardElements().stream().filter(boardElement -> boardElement.getRowPosition() == column).toList();
     }
 
+    @Override
+    public List<BoardElement> getPlayerSpaces(String token){
+        return getBoardElements().stream().filter(boardElement -> boardElement.getBoardPlace().contains(token)).toList();
+    }
+    @Override
     public List<BoardElement> getEmptySpaces(){
-        return boardElements.stream().filter(boardElement -> !boardElement.getBoardPlace().contains("r") && !boardElement.getBoardPlace().contains("y")).toList();
+        return getBoardElements().stream().filter(boardElement -> !boardElement.getBoardPlace().contains("r") && !boardElement.getBoardPlace().contains("y")).toList();
     }
 
     @Override
@@ -45,12 +48,13 @@ public class Board {
         return stringBuilder.toString();
     }
 
+    @Override
     public boolean validateRowInput(int row) {
         try {
             if (row < 7){
                 return true;
             } else {
-                System.out.printf((NOT_VALID_ROW_VAL_ERROR), row);
+                System.out.printf((NOT_VALID_ROW_VAL_ERROR), ROW_SIZE, row);
                 return false;
             }
         } catch (NumberFormatException n){
@@ -64,7 +68,7 @@ public class Board {
             if (column <= 7) {
                 return true;
             } else {
-                System.out.printf((NOT_VALID_COLUMN_VAL_ERROR), column);
+                System.out.printf((NOT_VALID_COLUMN_VAL_ERROR), COLUMN_SIZE, column);
                 return false;
             }
         } catch (NumberFormatException n) {

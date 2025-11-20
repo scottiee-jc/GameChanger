@@ -1,19 +1,27 @@
-package connect4;
+package org.gamechanger.connect4.impl;
+
+import org.gamechanger.boardGameCommons.GameBoard;
+import org.gamechanger.boardGameCommons.Move;
+import org.gamechanger.connect4.constants.ConnectFourConstants;
+import org.gamechanger.connect4.constants.Directions;
+import org.gamechanger.connect4.model.BoardElement;
+import org.gamechanger.connect4.model.ConnectFourBoard;
+import org.gamechanger.connect4.service.MyConnectFour;
 
 import java.util.*;
 import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
-import static connect4.ConnectFourConstants.*;
+import static org.gamechanger.boardGameCommons.CommonConstants.*;
 
 /**
  * Class implements MyConnectFour interface, which standardises the behaviours for board validation and shared player/computer operations
  */
 public class MyConnectFourImpl implements MyConnectFour {
 
-    private final Board board;
+    private final ConnectFourBoard board;
 
-    public MyConnectFourImpl(Board board) {
+    public MyConnectFourImpl(ConnectFourBoard board) {
         this.board = board;
     }
 
@@ -85,7 +93,7 @@ public class MyConnectFourImpl implements MyConnectFour {
     /**
      * isConnect4 checks for a connect4 winning instance across 4 different planes - diagonal down right (\), diagonal up right (/), down and right.
      * Takes in a String token to keep it flexible for computer user and human user and filters board elements based on this token.
-        * Returned Player Board spaces must be a size greater than or equal to 4 for the check to take place, else it returns false.
+        * Returned Player GameBoard spaces must be a size greater than or equal to 4 for the check to take place, else it returns false.
         * Logic is abstracted to a method hasConsecutivePlayerMovesInDirection which handles these cases.
      * @param token
      * @return
