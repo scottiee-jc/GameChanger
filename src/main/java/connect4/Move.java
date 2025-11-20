@@ -1,6 +1,10 @@
 package connect4;
 
-public final class Move { // move should be immutable as the internal state should not be modified as it tracks game state.
+/**
+ * Move is a data transfer object (DTO) used to track game state.
+ * The class is final as the internal state should not be modified, i.e. it is immutable
+ */
+public final class Move {
     private final int column;
     private final int row;
 

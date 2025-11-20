@@ -1,5 +1,10 @@
 package connect4;
 
+/**
+ * ConnectFourConstants is a class used to hold constant variables - mainly
+ * A constants-only class is not meant to be extended, so marking it final enforces that intent.
+ * final signals that the class is complete and self-contained — no inheritance needed or allowed.
+ */
 public final class ConnectFourConstants {
 
     public static final String WELCOME_MESSAGE = "Welcome to Connect 4";
@@ -23,6 +28,3 @@ public final class ConnectFourConstants {
 
 }
 
-// Prevents subclassing: A constants-only class is not meant to be extended. Marking it final enforces that intent.
-//Semantic clarity: final signals that the class is complete and self-contained — no inheritance needed or allowed.
-//Avoids misuse: Making it abstract implies it’s meant to be subclassed, which is misleading for a constants container.

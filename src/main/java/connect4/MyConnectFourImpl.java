@@ -1,39 +1,25 @@
 package connect4;
 
 import java.util.*;
+import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 import static connect4.ConnectFourConstants.*;
 
+/**
+ * Class implements MyConnectFour interface, which standardises the behaviours for board validation and shared player/computer operations
+ */
 public class MyConnectFourImpl implements MyConnectFour {
 
-    private Board board;
+    private final Board board;
 
-    @Override
-    public Board createBoard() {
-        Row row;
-        List<BoardElement> rows = new ArrayList<>();
-        for (int i = 0; i < ROW_SIZE; i++) {
-            List<BoardPlace> boardPlaces = new ArrayList<>();
-            for (int j = 0; j < COLUMN_SIZE; j++) {
-                BoardPlace boardPlace;
-                if (j != COLUMN_SIZE - 1) {
-                    boardPlace = new BoardPlace(j + 1, BOARD_PIECE);
-                    boardPlaces.add(boardPlace);
-                } else {
-                    boardPlace = new BoardPlace(j + 1, END_PIECE);
-                    boardPlaces.add(boardPlace);
-                }
-            }
-            row = new Row(i+1, boardPlaces);
-            rows.add(row);
-        }
-        board = new Board(rows);
-        return board;
+    public MyConnectFourImpl(Board board) {
+        this.board = board;
     }
 
     @Override
-    public void printBoard(){
-        if (board == null){
+    public void printBoard() {
+        if (board == null) {
             return;
         }
         System.out.println(board);
@@ -42,232 +28,167 @@ public class MyConnectFourImpl implements MyConnectFour {
 
     @Override
     public void editBoard(Move move, String playerMove) {
-        List<BoardElement> rows = board.getBoardElements();
-
-        for (BoardElement r: rows) {
-            if (r.getPosition() == move.getRow()){
-                List<BoardPlace> boardPlaces = rows.get(move.getRow()-1).getBoardPlaces();
-                for (BoardPlace bp : boardPlaces){
-                    if (bp.getPosition() == move.getColumn()){
-                        bp.placeMove(playerMove, move.getColumn());
-                    }
-                }
+        for (BoardElement be : board.getBoardElements()) {
+            if (be.getRowPosition() == move.getRow() && be.getColumnPosition() == move.getColumn()) {
+                be.setBoardPlace(playerMove);
+                return;
             }
         }
     }
 
+    /**
+     * Method handles many potential unchecked exception cases e.g. DataFormatErrors or issues parsing the string
+     * Returns true or false and handles the logging with a dedicated message, but doesn't throw errors so as to preserve game state.
+     * @param input
+     * @return
+     */
     @Override
     public boolean isValidInput(String input) {
-        String[] inputs = formatInput(input);
-        if (inputs.length > 2){
-            System.out.println(TOO_MANY_INPUTS);
-            return false;
-        } else if (inputs.length < 2){
+        if (!input.contains(",")){
             System.out.println(TOO_FEW_INPUTS);
             return false;
         }
-        int column = Integer.parseInt(inputs[0]);
-        int row = Integer.parseInt(inputs[1]);
-        if (validateColumnInput(column) && validateRowInput(row)){
-            return !isPlaceTaken(new Move(column,row));
+        String[] inputs = formatInput(input);
+        if (inputs.length > 2) {
+            System.out.println(TOO_MANY_INPUTS);
+            return false;
+        } else if (inputs.length < 2) {
+            System.out.println(TOO_FEW_INPUTS);
+            return false;
+        }
+        int column;
+        int row;
+        if (inputs[0].matches("\\d+")){
+            column = Integer.parseInt(inputs[0]);
+        } else {
+            System.out.printf(NON_DIGIT_CHAR_ERROR, inputs[0] + "\n");
+            return false;
+        }
+        if (inputs[1].matches("\\d+")){
+            row = Integer.parseInt(inputs[1]);
+        } else{
+            System.out.printf(NON_DIGIT_CHAR_ERROR, inputs[1] + "\n");
+            return false;
+        }
+        if (board.validateColumnInput(column) && board.validateRowInput(row)) {
+            if (isPlaceEmpty(new Move(column, row))){
+                return true;
+            } else {
+                System.out.println(PLACE_TAKEN);
+                return false;
+            }
         } else {
             return false;
         }
     }
 
+    /**
+     * isConnect4 checks for a connect4 winning instance across 4 different planes - diagonal down right (\), diagonal up right (/), down and right.
+     * Takes in a String token to keep it flexible for computer user and human user and filters board elements based on this token.
+        * Returned Player Board spaces must be a size greater than or equal to 4 for the check to take place, else it returns false.
+        * Logic is abstracted to a method hasConsecutivePlayerMovesInDirection which handles these cases.
+     * @param token
+     * @return
+     */
+    @Override
+    public boolean isConnect4(String token){
+        List<BoardElement> playerBoardSpaces = board.getBoardElements().stream().filter(bp -> bp.getBoardPlace().contains(token)).toList();
+        boolean horizontalWin = hasConsecutivePlayerMovesInDirection(playerBoardSpaces, Directions.RIGHT, 4);
+        boolean verticalWin = hasConsecutivePlayerMovesInDirection(playerBoardSpaces, Directions.DOWN,4);
+        boolean diagonalWin = hasConsecutivePlayerMovesInDirection(playerBoardSpaces, Directions.DOWN_RIGHT,4) || hasConsecutivePlayerMovesInDirection(playerBoardSpaces, Directions.UP_RIGHT, 4);
+
+        if (playerBoardSpaces.size() >= 4){
+            return horizontalWin || verticalWin || diagonalWin;
+        }
+        return false;
+    }
+
+    /**
+     * hasConsecutivePlayerMovesInDirection generalises and abstracts the logic needed to either find the next move or find the winning move for a computer player or human player.
+     * First, it utilises the map feature of java's stream() api in order to create a Set<String> object containing the mapped values.
+        * This allows for quicker searching of mapped column and row values by utilising "contains()" method of the String.
+        * The board elements containing player spaces is then iterated through sequentially, and row / column values are compared against the set.
+        * If found, the loop will iterate onto the next value in the list and compare again with the set.
+        * An instance of the direction enum is used so that individual values can be passed through and checked according to direction.
+        * The count is also generalised, allowing the method to be widely applicable to many cases.
+     * The loop is only broken if there is not another consecutive item in the chain, whilst it returns true if the required number of elements is found / the next element can be taken by the user or blocked by the computer.
+     */
 
     @Override
-    public void generateComputerMove(Computer computer) {
-        Move playerLastMove = computer.getPlayerLastMove();
-        Move move = findBestSpace();
-        if (findBestSpace() != null){
-            editBoard(move, "y");
-        } else {
-            blockUserMove();
-        }
+    public boolean hasConsecutivePlayerMovesInDirection(List<BoardElement> playerSpaces, Directions direction, int count) {
+        // converting to a string allows for much easier and less verbose checking of positions
+        Set<String> positionSet = playerSpaces.stream()
+                .map(place -> place.getRowPosition() + "," + place.getColumnPosition())// maps place and column comma separated
+                .collect(Collectors.toSet());
 
-        // Idea could be to generate a computer move that either:
-        // Scans the board for four empty spaces up or down - Looks to place its own tack
-        // Scans the board for user move - if about to complete 3, look to place tack to block
-    }
+        for (BoardElement place : playerSpaces) { // loops through every element in the set
+            int row = place.getRowPosition();
+            int col = place.getColumnPosition();
 
-    private Move findBestSpace(){
-        List<BoardElement> rows = board.getBoardElements();
-        for (BoardElement r: rows) {
-            int rowPos = r.getPosition();
-            List<Integer> emptyRowSegments = r.getBoardPlaces().stream().filter(bp -> !bp.getBoardPiece().contains("r") || !bp.getBoardPiece().contains("y")).map(BoardPlace::getPosition).toList();
-            for (int segment : emptyRowSegments) {
-                if (segment < 6 && segment > 0){
-                    if (r.getBoardPlaces().get(segment + 1).getBoardPiece().contains("y")) {
-                        return new Move(r.getBoardPlaces().get(segment).getPosition(), rowPos);
-                    } else if (r.getBoardPlaces().get(segment-1).getBoardPiece().contains("y")){
-                        return new Move(r.getBoardPlaces().get(segment).getPosition(), rowPos);
-                    }
+            boolean isConsecutive = true;
+            for (int i = 1; i < count; i++) { // checks for consecutive positions starting from 1 with a max limit defined by calling method
+                // current row value + value of i * the row positions of the direction to find next row val
+                // for instance if going horiztonally, row will stay at 0 but check for next columns; vice versa for vertical.
+                // diagonally it will work like so:
+                // if column,row at 1 = '5,4' and it is applying UP_RIGHT logic,
+                // nextRow = 5 + 1 * (-1) -> 5 + (-1) = 4
+                // nextCol = 4 + 1 * (1) -> 4 + 1 = 5
+                // nextPos = "4,5"
+                String nextPos = (row + i * direction.getRowPos())
+                        + "," + (col + i * direction.getColumnPos());
+
+                if (!positionSet.contains(nextPos)) { // breaks the loop if the next val in the set is not consecutive
+                    isConsecutive = false;
+                    break;
                 }
             }
-            int column = emptyRowSegments.stream().findAny().get();
-            return new Move(column, rowPos);
+            int winningRow = row + count * direction.getRowPos();
+            int winningCol = col + count * direction.getColumnPos();
+            Move move = new Move(winningCol, winningRow);
+            if (count == 4){
+                if (isConsecutive){ // if count is 4 it is checking for an already won scenario
+                    return true;
+                }
+            } else if (isConsecutive && isPlaceEmpty(move)){ // if count is less then it needs to validate the position is empty before returning true
+                return true;
+            }
         }
-        return null;
+        return false;
     }
 
-    private void blockUserMove(){
-        if (findThree(board.getListOfColumns()) != null){
-            Move nextMove = findThree(board.getListOfColumns());
-            if (validateColumnInput(nextMove.getColumn()) && !isPlaceTaken(nextMove)){
-                editBoard(nextMove, "y");
-            }
-        } else if (findThree(board.getBoardElements()) != null){
-            Move nextMove = findThree(board.getBoardElements());
-            if (validateRowInput(nextMove.getRow()) && !isPlaceTaken(nextMove)){
-                editBoard(nextMove, "y");
-            }
-        } else {
-            // logic for diagonal?
-        }
-    }
-
+    /**
+     * isPlaceEmpty is a simple boolean method used to check if a space on the board is empty by iterating through and checking for player slots
+     * @param move
+     * @return
+     */
     @Override
-    public boolean hasWon(String token) {
-        return isHorizontalConnectFour(token) || isVerticalConnectFour(token) || isDiagonalConnectFour(token);
-    }
-
-    private boolean isHorizontalConnectFour(String token){
-        List<BoardElement> rows = board.getBoardElements();
-        return findFour(rows, token);
-    }
-
-    private boolean isVerticalConnectFour(String token) {
-        List<BoardElement> columns = board.getListOfColumns();
-        return findFour(columns, token);
-    }
-
-    private boolean isDiagonalConnectFour(String token){
-        List<BoardElement> columns = board.getListOfColumns();
-        List<Move> moves = new ArrayList<>(); // combines the row and column position of the user moves
-        for (BoardElement column : columns) {
-            List<Integer> rowPos = column.getBoardPlaces().stream()
-                    .filter(bp -> bp.getBoardPiece().contains(token))
-                    .map(BoardPlace::getPosition)
-                    .toList();
-
-            for (Integer row : rowPos) {
-                moves.add(new Move(column.getPosition(), row));
-            }
-        }
-        for (Move m: moves) {
-            System.out.println("column =" + m.getColumn() + " row =" +m.getRow());
-        }
-        // loop will read from top left to bottom right
-        for (int i = 0; i <= moves.size() - 4; i++) {
-            int currentRow = moves.get(i).getRow();
-            int currentColumn = moves.get(i).getColumn();
-            if (moves.get(i+1).getColumn() == currentColumn + 1 // the next column has to be after the current column, e.g 1 -> 2 -> 3 -> 4
-                    && moves.get(i+1).getRow() == currentRow +1 // the same applies for the row, 1 -> 2 -> 3 -> 4
-                && moves.get(i+2).getColumn() == currentColumn + 2 && moves.get(i+2).getRow() == currentRow +2
-                && moves.get(i+3).getColumn() == currentColumn + 3 && moves.get(i+3).getRow() == currentRow +3){
-                return true; // e.g. 1,1 -> 2,2 -> 3,3 -> 4,4 = true
-            }
-        }
-        // loop will read from bottom left to top right
-        for (int i = 0; i <= moves.size() - 4; i++) {
-            int currentRow = moves.get(i).getRow();
-            int currentColumn = moves.get(i).getColumn();
-            if (moves.get(i + 1).getRow() == currentRow - 1  // the next row has to be before the current row, e.g. 6 -> 5 -> 4 -> 3
-                    && moves.get(i + 1).getColumn() == currentColumn + 1 && // the next column has to be AFTER the current, e.g. 4 -> 5 -> 6 -> 7
-                    moves.get(i + 2).getRow() == currentRow - 2 && moves.get(i + 2).getColumn() == currentColumn + 2 &&
-                    moves.get(i + 3).getRow() == currentRow - 3 && moves.get(i + 3).getColumn() == currentColumn + 3) {
-                return true; // e.g. 4,6 -> 5,5 -> 6,4 -> 7,3
+    public boolean isPlaceEmpty(Move move){
+        for (BoardElement be: board.getBoardElements()) {
+            if (be.getRowPosition() == move.getRow()
+                    && be.getColumnPosition() == move.getColumn()
+                    && !be.getBoardPlace().contains("r") &&
+                    !be.getBoardPlace().contains("y")){
+                return true;
             }
         }
         return false;
     }
 
-    private boolean findFour(List<BoardElement> boardElements, String token){
-        for (BoardElement be: boardElements) {
-            List<BoardPlace> playerBoardSpaces = be.getBoardPlaces().stream().filter(bp -> bp.getBoardPiece().contains(token)).toList();
-            if (playerBoardSpaces.size() >= 4){
-                for (int i = 0; i <= playerBoardSpaces.size() - 4; i++) {
-                    int current = playerBoardSpaces.get(i).getPosition();
-                    if (playerBoardSpaces.get(i + 1).getPosition() == current + 1 &&
-                            playerBoardSpaces.get(i + 2).getPosition() == current + 2 &&
-                            playerBoardSpaces.get(i + 3).getPosition() == current + 3) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    private Move findThree(List<BoardElement> boardElements){
-        for (BoardElement be: boardElements) {
-            List<Integer> playerTakenSlots = be.getBoardPlaces().stream().filter(bp -> bp.getBoardPiece().contains("r")).map(BoardPlace::getPosition).toList();
-            if (playerTakenSlots.size() >= 3){
-                for (int i = 0; i <= playerTakenSlots.size() - 3; i++) {
-                    int current = playerTakenSlots.get(i);
-                    if (playerTakenSlots.get(i + 1) == current + 1 && playerTakenSlots.get(i + 2) == current + 2) {
-                        if (be instanceof Column) {
-                            return new Move(be.getPosition(), playerTakenSlots.get(i + 2) + 1); // returns the row position of next empty space
-                        } else {
-                            return new Move(playerTakenSlots.get(i + 2) + 1, be.getPosition()); // returns the column position of next empty space
-                        }
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    private boolean isPlaceTaken(Move move){
-        List<BoardElement> rows = board.getBoardElements();
-        for (BoardElement r: rows) {
-            if (r.getPosition() == move.getRow()){
-                List<BoardPlace> boardPlaces = rows.get(move.getRow()-1).getBoardPlaces();
-                for (BoardPlace bp : boardPlaces){
-                    if (bp.getPosition() == move.getColumn()){
-                        if (bp.getBoardPiece().contains("r") || bp.getBoardPiece().contains("y")){
-                            System.out.println(PLACE_TAKEN);
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        return false;
-    }
+    /**
+     * Enhances the error handling by catching an exception and printing an error message if there is a non-digit entered
+     * input is split also by whitespace and trimmed to ensure length of input is correct - limit defined by length of array
+     * @param input
+     * @return
+     */
 
     private String[] formatInput(String input){
-        input = input.replaceAll("\\s+","").trim();
-        return input.split(",");
-    }
-
-    private boolean validateRowInput(int row) {
+        String[] newInput = new String[1];
         try {
-            if (row < 7){
-                return true;
-            } else {
-                System.out.printf((NOT_VALID_ROW_VAL_ERROR), row);
-                return false;
-            }
-        } catch (NumberFormatException n){
-            System.out.printf((NON_DIGIT_CHAR_ERROR) + "%n", n.getMessage());
-            return false;
+            newInput = input.replaceAll("\\s+","").trim().split(",");
+        } catch (PatternSyntaxException e){
+            System.out.printf(NON_DIGIT_CHAR_ERROR, e.getMessage());
         }
-    }
-
-    private boolean validateColumnInput(int column) {
-        try {
-            if (column <= 7) {
-                return true;
-            } else {
-                System.out.printf((NOT_VALID_COLUMN_VAL_ERROR), column);
-                return false;
-            }
-        } catch (NumberFormatException n) {
-            System.out.printf((NON_DIGIT_CHAR_ERROR) + "%n", n.getMessage());
-            return false;
-        }
+        return newInput;
     }
 
 }
