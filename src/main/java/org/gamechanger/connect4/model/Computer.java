@@ -9,21 +9,17 @@ public final class Computer { // Computer should be final for immutability purpo
     private final Deque<Move> moves = new ArrayDeque<>();
     private final Deque<Move> playerLastMove = new ArrayDeque<>();
 
-    public Computer() {
-    }
+    public Computer() {}
 
     public Move getLastMove(){
         return moves.getLast();
     }
-
     public Move getPlayerLastMove(){
         return playerLastMove.getLast();
     }
-
     public void recordMove(Move move) {
         moves.addLast(move);
     }
-
     public void recordPlayerMove(Move move) {
         playerLastMove.addLast(move);
     }

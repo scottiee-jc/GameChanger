@@ -1,25 +1,22 @@
-package org.gamechanger.connect4.impl;
+package org.gamechanger.connect4;
 
 import org.gamechanger.boardGameCommons.GameBoard;
 import org.gamechanger.connect4.constants.Directions;
 import org.gamechanger.boardGameCommons.Move;
-import org.gamechanger.connect4.model.ConnectFourBoard;
-import org.gamechanger.connect4.service.MyConnectFour;
 import org.gamechanger.connect4.model.BoardElement;
-import org.gamechanger.connect4.service.ComputerPlayerInterface;
+import org.gamechanger.boardGameCommons.ComputerPlayerInterface;
 
-import java.awt.font.GlyphMetrics;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ComputerPlayerInterfaceImpl implements ComputerPlayerInterface {
-    private final GameBoard board;
+public class ConnectFourPlayerInterfaceImpl implements ComputerPlayerInterface {
     private final MyConnectFour myConnectFour; // Allows use of methods from MyConnectFour interface e.g. for validation purposes
+    private final GameBoard board;
 
     // Create board ONCE, in GameRunner class, and assign it in the constructor
-    public ComputerPlayerInterfaceImpl(ConnectFourBoard board, MyConnectFour myConnectFour) {
-        this.board = board;
+    public ConnectFourPlayerInterfaceImpl(ConnectFourImpl myConnectFour) {
         this.myConnectFour = myConnectFour;
+        this.board = myConnectFour.getBoard();
     }
 
     /**

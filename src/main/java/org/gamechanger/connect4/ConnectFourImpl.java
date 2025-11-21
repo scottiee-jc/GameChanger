@@ -1,12 +1,9 @@
-package org.gamechanger.connect4.impl;
+package org.gamechanger.connect4;
 
-import org.gamechanger.boardGameCommons.GameBoard;
 import org.gamechanger.boardGameCommons.Move;
-import org.gamechanger.connect4.constants.ConnectFourConstants;
 import org.gamechanger.connect4.constants.Directions;
 import org.gamechanger.connect4.model.BoardElement;
 import org.gamechanger.connect4.model.ConnectFourBoard;
-import org.gamechanger.connect4.service.MyConnectFour;
 
 import java.util.*;
 import java.util.regex.PatternSyntaxException;
@@ -17,12 +14,16 @@ import static org.gamechanger.boardGameCommons.CommonConstants.*;
 /**
  * Class implements MyConnectFour interface, which standardises the behaviours for board validation and shared player/computer operations
  */
-public class MyConnectFourImpl implements MyConnectFour {
+public class ConnectFourImpl implements MyConnectFour {
 
     private final ConnectFourBoard board;
 
-    public MyConnectFourImpl(ConnectFourBoard board) {
+    public ConnectFourImpl(ConnectFourBoard board) {
         this.board = board;
+    }
+
+    public ConnectFourBoard getBoard() {
+        return board;
     }
 
     @Override

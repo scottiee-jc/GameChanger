@@ -1,4 +1,4 @@
-package org.gamechanger.connect4.service;
+package org.gamechanger.connect4;
 
 import org.gamechanger.boardGameCommons.Move;
 import org.gamechanger.connect4.constants.Directions;

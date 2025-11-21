@@ -1,14 +1,15 @@
 package org.gamechanger.connect4.model;
 
 import org.gamechanger.boardGameCommons.GameBoard;
+import org.gamechanger.connect4.constants.ConnectFourConstants;
 
 import java.util.List;
 
 import static org.gamechanger.boardGameCommons.CommonConstants.*;
-import static org.gamechanger.connect4.constants.ConnectFourConstants.COLUMN_SIZE;
-import static org.gamechanger.connect4.constants.ConnectFourConstants.ROW_SIZE;
 
 public class ConnectFourBoard extends GameBoard {
+
+    private final ConnectFourConstants constants = new ConnectFourConstants();
 
     public ConnectFourBoard(List<BoardElement> boardElements) {
         super(boardElements);
@@ -35,7 +36,7 @@ public class ConnectFourBoard extends GameBoard {
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i <= ROW_SIZE ; i++) {
+        for (int i = 0; i <= constants.ROW_SIZE() ; i++) {
             if (i != 0){
                 stringBuilder.append(i).append("  ");
             }
@@ -54,7 +55,7 @@ public class ConnectFourBoard extends GameBoard {
             if (row < 7){
                 return true;
             } else {
-                System.out.printf((NOT_VALID_ROW_VAL_ERROR), ROW_SIZE, row);
+                System.out.printf((NOT_VALID_ROW_VAL_ERROR), constants.ROW_SIZE(), row);
                 return false;
             }
         } catch (NumberFormatException n){
@@ -68,7 +69,7 @@ public class ConnectFourBoard extends GameBoard {
             if (column <= 7) {
                 return true;
             } else {
-                System.out.printf((NOT_VALID_COLUMN_VAL_ERROR), COLUMN_SIZE, column);
+                System.out.printf((NOT_VALID_COLUMN_VAL_ERROR), constants.COLUMN_SIZE(), column);
                 return false;
             }
         } catch (NumberFormatException n) {
