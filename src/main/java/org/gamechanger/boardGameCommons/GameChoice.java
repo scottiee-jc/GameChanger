@@ -2,8 +2,8 @@ package org.gamechanger.boardGameCommons;
 
 public enum GameChoice {
     
-    TIC_TAC_TOE(1, "Tic Tac Toe"),
-    CONNECT_FOUR(2, "Connect Four");
+    CONNECT_FOUR(1, "Connect Four"),
+    TIC_TAC_TOE(2, "Tic Tac Toe");
 
     // SUDOKU?
     // FOOTBALL_QUIZ?
