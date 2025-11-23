@@ -41,5 +41,4 @@ public class GameRunner {
             System.out.println("Error occurred during game: " + e.getMessage());
         }
     }
-
 }

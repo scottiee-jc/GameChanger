@@ -26,25 +26,6 @@ public class ConnectFourImpl implements MyConnectFour {
         return board;
     }
 
-    @Override
-    public void printBoard() {
-        if (board == null) {
-            return;
-        }
-        System.out.println(board);
-        System.out.println("     1   2   3   4   5   6   7");
-    }
-
-    @Override
-    public void editBoard(Move move, String playerMove) {
-        for (BoardElement be : board.getBoardElements()) {
-            if (be.getRowPosition() == move.getRow() && be.getColumnPosition() == move.getColumn()) {
-                be.setBoardPlace(playerMove);
-                return;
-            }
-        }
-    }
-
     /**
      * Method handles many potential unchecked exception cases e.g. DataFormatErrors or issues parsing the string
      * Returns true or false and handles the logging with a dedicated message, but doesn't throw errors so as to preserve game state.

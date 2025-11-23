@@ -3,14 +3,15 @@ package org.gamechanger;
 import org.gamechanger.boardGameCommons.ComputerPlayerInterface;
 import org.gamechanger.boardGameCommons.Move;
 import org.gamechanger.connect4.constants.ConnectFourConstants;
-import org.gamechanger.connect4.ConnectFourPlayerInterfaceImpl;
+import org.gamechanger.connect4.ConnectFourPlayerImpl;
 import org.gamechanger.connect4.ConnectFourImpl;
 import org.gamechanger.ticTacToe.TicTacToeImpl;
+import org.gamechanger.utility.ConnectFourUtility;
+import org.gamechanger.utility.TicTacToeUtility;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import static org.gamechanger.utility.ConnectFourUtility.loadStartingMessages;
 import static org.gamechanger.connect4.constants.ConnectFourConstants.*;
 
 public class GameImplementation implements GameInterface{
@@ -18,16 +19,17 @@ public class GameImplementation implements GameInterface{
 
     @Override
     public void playTicTacToe(BufferedReader reader, int players, TicTacToeImpl myTicTacToe) throws IOException {
+        TicTacToeUtility.loadStartingMessages();
 
     }
 
     @Override
     public void playConnectFour(BufferedReader reader, int players, ConnectFourImpl myConnectFour) throws IOException {
-        loadStartingMessages();
-        myConnectFour.printBoard();
+        ConnectFourUtility.loadStartingMessages();
+        System.out.println(myConnectFour.getBoard());
 
         if (players != 2){
-            ComputerPlayerInterface computerPlayerInterface = new ConnectFourPlayerInterfaceImpl(myConnectFour);
+            ComputerPlayerInterface computerPlayerInterface = new ConnectFourPlayerImpl(myConnectFour);
             while(true){
                 boolean isUser = true;
                 while(isUser){
@@ -41,9 +43,9 @@ public class GameImplementation implements GameInterface{
                     if (isValid){
                         String[] userMove = command.split(",");
                         Move move = new Move(Integer.parseInt(userMove[0]), Integer.parseInt(userMove[1]));
-                        myConnectFour.editBoard(move, "r");
+                        myConnectFour.getBoard().editBoard(move, "r");
                         isUser = false;
-                        myConnectFour.printBoard();
+                        System.out.println(myConnectFour.getBoard());
                     }
                     if (myConnectFour.isConnect4("r")){
                         System.out.println(WINNER_MESSAGE);
@@ -52,7 +54,7 @@ public class GameImplementation implements GameInterface{
                 }
                 while (!isUser){
                     computerPlayerInterface.generateComputerMove();
-                    myConnectFour.printBoard();
+                    System.out.println(myConnectFour.getBoard());
                     if (myConnectFour.isConnect4("y")){
                         System.out.println(LOSER_MESSAGE);
                         System.exit(0);
@@ -61,8 +63,6 @@ public class GameImplementation implements GameInterface{
                 }
             }
         }
-
     }
-
 
 }

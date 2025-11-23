@@ -9,12 +9,11 @@ import org.gamechanger.boardGameCommons.ComputerPlayerInterface;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ConnectFourPlayerInterfaceImpl implements ComputerPlayerInterface {
-    private final MyConnectFour myConnectFour; // Allows use of methods from MyConnectFour interface e.g. for validation purposes
+public class ConnectFourPlayerImpl implements ComputerPlayerInterface {
+    private final MyConnectFour myConnectFour;
     private final GameBoard board;
 
-    // Create board ONCE, in GameRunner class, and assign it in the constructor
-    public ConnectFourPlayerInterfaceImpl(ConnectFourImpl myConnectFour) {
+    public ConnectFourPlayerImpl(ConnectFourImpl myConnectFour) {
         this.myConnectFour = myConnectFour;
         this.board = myConnectFour.getBoard();
     }
@@ -91,7 +90,7 @@ public class ConnectFourPlayerInterfaceImpl implements ComputerPlayerInterface {
             String winningPos = winningRow + "," + winningCol;
 
             if (isThree && emptySpacesSet.contains(winningPos)) { // as long as it is empty, it will make the winning move
-                myConnectFour.editBoard(new Move(winningCol, winningRow), "y");
+                board.editBoard(new Move(winningCol, winningRow), "y");
                 return;
             }
         }

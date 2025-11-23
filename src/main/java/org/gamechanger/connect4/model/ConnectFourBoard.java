@@ -1,6 +1,7 @@
 package org.gamechanger.connect4.model;
 
 import org.gamechanger.boardGameCommons.GameBoard;
+import org.gamechanger.boardGameCommons.Move;
 import org.gamechanger.connect4.constants.ConnectFourConstants;
 
 import java.util.List;
@@ -13,10 +14,6 @@ public class ConnectFourBoard extends GameBoard {
 
     public ConnectFourBoard(List<BoardElement> boardElements) {
         super(boardElements);
-    }
-
-    public List<BoardElement> getByRow(int row){
-        return getBoardElements().stream().filter(boardElement -> boardElement.getRowPosition() == row).toList();
     }
 
     @Override
@@ -34,6 +31,16 @@ public class ConnectFourBoard extends GameBoard {
     }
 
     @Override
+    public void editBoard(Move move, String playerMove) {
+        for (BoardElement be : getBoardElements()) {
+            if (be.getRowPosition() == move.getRow() && be.getColumnPosition() == move.getColumn()) {
+                be.setBoardPlace(playerMove);
+                return;
+            }
+        }
+    }
+
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i <= constants.ROW_SIZE() ; i++) {
@@ -46,6 +53,7 @@ public class ConnectFourBoard extends GameBoard {
             stringBuilder.append("\n");
         }
         stringBuilder.deleteCharAt(stringBuilder.length()-1); // remove the last empty line
+        System.out.println("     1   2   3   4   5   6   7");
         return stringBuilder.toString();
     }
 

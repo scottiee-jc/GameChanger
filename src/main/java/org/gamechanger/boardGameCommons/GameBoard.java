@@ -16,12 +16,15 @@ public abstract class GameBoard {
         return boardElements;
     }
 
+    public List<BoardElement> getByRow(int row){
+        return getBoardElements().stream().filter(boardElement -> boardElement.getRowPosition() == row).toList();
+    }
+    public List<BoardElement> getByColumn(int column){
+        return getBoardElements().stream().filter(boardElement -> boardElement.getRowPosition() == column).toList();
+    }
+
     public abstract boolean validateRowInput(int row);
-
-    public abstract List<BoardElement> getByColumn(int column);
-
     public abstract List<BoardElement> getPlayerSpaces(String token);
-
     public abstract List<BoardElement> getEmptySpaces();
-
+    public abstract void editBoard(Move move, String playerMove);
 }

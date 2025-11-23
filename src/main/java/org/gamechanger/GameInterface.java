@@ -9,7 +9,6 @@ import java.io.IOException;
 public interface GameInterface {
 
     void playTicTacToe(BufferedReader reader, int players, TicTacToeImpl myTicTacToe) throws IOException;
-
     void playConnectFour(BufferedReader reader, int players, ConnectFourImpl myConnectFour) throws IOException;
 
 }
