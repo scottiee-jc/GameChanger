@@ -2,7 +2,7 @@ package org.gamechanger.ticTacToe;
 
 import org.gamechanger.boardGameCommons.GameBoard;
 import org.gamechanger.boardGameCommons.Move;
-import org.gamechanger.connect4.model.BoardElement;
+import org.gamechanger.connect4.BoardElement;
 
 import java.util.List;
 

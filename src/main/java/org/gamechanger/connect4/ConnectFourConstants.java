@@ -1,4 +1,4 @@
-package org.gamechanger.connect4.constants;
+package org.gamechanger.connect4;
 
 import org.gamechanger.boardGameCommons.CommonConstants;
 

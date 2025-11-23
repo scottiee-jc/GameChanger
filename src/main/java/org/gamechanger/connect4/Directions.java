@@ -1,4 +1,4 @@
-package org.gamechanger.connect4.constants;
+package org.gamechanger.connect4;
 
 /**
  * Directions enum encapsulates each directional position into single, well-defined variables for iteration during scanning

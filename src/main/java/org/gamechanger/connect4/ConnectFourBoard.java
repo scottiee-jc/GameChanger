@@ -1,8 +1,7 @@
-package org.gamechanger.connect4.model;
+package org.gamechanger.connect4;
 
 import org.gamechanger.boardGameCommons.GameBoard;
 import org.gamechanger.boardGameCommons.Move;
-import org.gamechanger.connect4.constants.ConnectFourConstants;
 
 import java.util.List;
 
@@ -14,20 +13,6 @@ public class ConnectFourBoard extends GameBoard {
 
     public ConnectFourBoard(List<BoardElement> boardElements) {
         super(boardElements);
-    }
-
-    @Override
-    public List<BoardElement> getByColumn(int column){
-        return getBoardElements().stream().filter(boardElement -> boardElement.getRowPosition() == column).toList();
-    }
-
-    @Override
-    public List<BoardElement> getPlayerSpaces(String token){
-        return getBoardElements().stream().filter(boardElement -> boardElement.getBoardPlace().contains(token)).toList();
-    }
-    @Override
-    public List<BoardElement> getEmptySpaces(){
-        return getBoardElements().stream().filter(boardElement -> !boardElement.getBoardPlace().contains("r") && !boardElement.getBoardPlace().contains("y")).toList();
     }
 
     @Override

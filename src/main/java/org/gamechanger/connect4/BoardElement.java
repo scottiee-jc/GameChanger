@@ -1,4 +1,4 @@
-package org.gamechanger.connect4.model;
+package org.gamechanger.connect4;
 
 public class BoardElement {
 

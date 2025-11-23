@@ -1,10 +1,9 @@
 package org.gamechanger;
 
 import org.gamechanger.boardGameCommons.GameChoice;
-import org.gamechanger.utility.ConnectFourUtility;
 import org.gamechanger.connect4.ConnectFourImpl;
 import org.gamechanger.ticTacToe.TicTacToeImpl;
-import org.gamechanger.utility.TicTacToeUtility;
+import org.gamechanger.boardGameCommons.GameUtility;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -15,7 +14,7 @@ public class GameRunner {
 
     public static void main(String[] args){
         try {
-            GameInterface gameInterface = new GameImplementation();
+            GameRunnerService gameRunnerService = new GameImplementation();
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             System.out.println(WELCOME_TO_LANDING);
             System.out.println("1 = Connect Four");
@@ -30,12 +29,12 @@ public class GameRunner {
                 System.out.printf(HOW_MANY_PLAYERS, GameChoice.CONNECT_FOUR.getName());
                 players = Integer.parseInt(reader.readLine());
                 System.out.printf(CREATING_GAME, GameChoice.CONNECT_FOUR.getName(), players);
-                gameInterface.playConnectFour(reader, players, new ConnectFourImpl(ConnectFourUtility.createBoard()));
+                gameRunnerService.playConnectFour(reader, players, new ConnectFourImpl(GameUtility.createConnectFourBoard()));
             } else {
                 System.out.printf(HOW_MANY_PLAYERS, GameChoice.TIC_TAC_TOE.getName());
                 players = Integer.parseInt(reader.readLine());
                 System.out.printf(CREATING_GAME, GameChoice.TIC_TAC_TOE.getName(), players);
-                gameInterface.playTicTacToe(reader, players, new TicTacToeImpl(TicTacToeUtility.createBoard()));
+                gameRunnerService.playTicTacToe(reader, players, new TicTacToeImpl(GameUtility.createTicTacToeBoard()));
             }
         } catch (Exception e){
             System.out.println("Error occurred during game: " + e.getMessage());

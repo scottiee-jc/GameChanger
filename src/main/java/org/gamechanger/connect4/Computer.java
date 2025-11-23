@@ -1,4 +1,4 @@
-package org.gamechanger.connect4.model;
+package org.gamechanger.connect4;
 
 import org.gamechanger.boardGameCommons.Move;
 
@@ -23,4 +23,6 @@ public final class Computer { // Computer should be final for immutability purpo
     public void recordPlayerMove(Move move) {
         playerLastMove.addLast(move);
     }
+
+
 }
